@@ -69,7 +69,7 @@ To rename the URL: **Site settings → Domain management → Change site name**.
 
 Find your API key in Iterable under **Integrations → API Keys**.
 
-Add your API key on the Home Page and click connect. A successful connection will result in the Connect button turning green and the text updates to connected. The connection will persist until the browser is closed as it is held in the browser's local storgage.
+Add your API key on the Home Page and click connect. A successful connection will result in the Connect button turning green and the text updates to connected. The connection will persist until the tab is closed.
 
 ### Product Catalogue
 
@@ -142,7 +142,7 @@ baseUrl: 'https://api.eu.iterable.com/api',
 ├── css/
 │   └── styles.css           # Full design system (tokens, layout, components)
 └── js/
-    ├── config.js            # ⚙️  API key + product catalogue – edit this first
+    ├── config.js            # API key + product catalogue – edit this first
     ├── iterable.js          # All Iterable API calls
     ├── components.js        # Shared header, footer, cart panel, toast system
     ├── cart.js              # Cart state, rendering, and purchase logic

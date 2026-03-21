@@ -1,8 +1,6 @@
 /**
  * CraftCXM — Iterable Test App Configuration
  * -------------------------------------------
- * Replace YOUR_API_KEY_HERE with your Iterable sandbox API key.
- * Find it in your Iterable account under: Settings > API Keys
  */
 
 const ITERABLE_CONFIG = {

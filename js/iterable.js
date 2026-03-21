@@ -41,12 +41,12 @@ async function iterableFetch(method, path, body = null) {
 
 /* ── API key helpers ── */
 function getStoredApiKey() {
-  return localStorage.getItem('craftcxm_api_key') || '';
+  return sessionStorage.getItem('craftcxm_api_key') || '';
 }
 
 /* ── email guard ── */
 function getStoredEmail() {
-  return localStorage.getItem('craftcxm_email') || '';
+  return sessionStorage.getItem('craftcxm_email') || '';
 }
 
 function requireEmail() {

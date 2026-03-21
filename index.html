@@ -107,7 +107,7 @@
 <script src="js/app.js"></script>
 <script>
   initComponents('home');
-  initApp('home', 'Home');
+  initApp('Home');
 
   // API key connect
   const heroApiKeyInput  = document.getElementById('heroApiKeyInput');
@@ -139,7 +139,7 @@
     heroConnectBtn.disabled = true;
 
     // Temporarily store so iterableFetch can use it
-    localStorage.setItem('craftcxm_api_key', key);
+    sessionStorage.setItem('craftcxm_api_key', key);
 
     const result = await iterableFetch('GET', '/channels');
 
@@ -149,7 +149,7 @@
       setConnectedState(true);
       showToast('API key connected successfully.', 'success');
     } else {
-      localStorage.removeItem('craftcxm_api_key');
+      sessionStorage.removeItem('craftcxm_api_key');
       setConnectedState(false);
       const msg = result.error && result.error !== 'No API key set.'
         ? `Connection failed: ${result.error}`

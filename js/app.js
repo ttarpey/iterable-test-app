@@ -11,19 +11,19 @@ const API_KEY_KEY = 'craftcxm_api_key';
 
 /* ── API key persistence ── */
 function getStoredApiKey() {
-  return localStorage.getItem(API_KEY_KEY) || '';
+  return sessionStorage.getItem(API_KEY_KEY) || '';
 }
 
 /* ── Email persistence ── */
 function getStoredEmail() {
-  return localStorage.getItem(EMAIL_KEY) || '';
+  return sessionStorage.getItem(EMAIL_KEY) || '';
 }
 
 function setStoredEmail(email) {
   if (email) {
-    localStorage.setItem(EMAIL_KEY, email);
+    sessionStorage.setItem(EMAIL_KEY, email);
   } else {
-    localStorage.removeItem(EMAIL_KEY);
+    sessionStorage.removeItem(EMAIL_KEY);
   }
 }
 
@@ -143,7 +143,7 @@ function renderNoEmailBanner(container) {
 }
 
 /* ── Main init ── */
-function initApp(currentPage, trackPageAs) {
+function initApp(trackPageAs) {
   wireEmailInputs();
   wireHamburger();
   wireNavTracking();
