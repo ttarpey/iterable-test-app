@@ -326,6 +326,8 @@ p { color: var(--color-text-muted); }
   top: var(--header-height);
   left: 0;
   right: 0;
+  max-height: calc(100vh - var(--header-height));
+  overflow-y: auto;
   background: var(--color-primary-light);
   border-bottom: 1px solid rgba(255,255,255,.06);
   z-index: 999;
@@ -348,6 +350,7 @@ p { color: var(--color-text-muted); }
   text-decoration: none;
   transition: all var(--transition);
 }
+.mobile-nav a svg { width: 18px; height: 18px; flex-shrink: 0; }
 .mobile-nav a:hover, .mobile-nav a.active {
   background: rgba(255,255,255,.08);
   color: #fff;
@@ -618,6 +621,40 @@ p { color: var(--color-text-muted); }
 .hero-logo-text span { color: var(--color-accent); }
 .hero h1 { margin-bottom: 16px; color: var(--color-text); }
 .hero p { max-width: 580px; margin: 0 auto 40px; font-size: 1.05rem; }
+
+.hero-api-key-group {
+  display: flex;
+  gap: 10px;
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+}
+.hero-api-key-input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 16px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  outline: none;
+  transition: all var(--transition);
+  font-family: monospace;
+}
+.hero-api-key-input::placeholder { color: var(--color-text-muted); }
+.hero-api-key-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(99,102,241,.15);
+}
+.btn-connected {
+  background: var(--color-success) !important;
+  cursor: default;
+}
+.btn-connected:hover { background: var(--color-success) !important; transform: none !important; box-shadow: none !important; }
+@media (max-width: 480px) {
+  .hero-api-key-group { flex-direction: column; }
+}
 
 .nav-cards {
   display: grid;

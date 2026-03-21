@@ -6,7 +6,13 @@
  * and automatic page-view event tracking.
  */
 
-const EMAIL_KEY = 'craftcxm_email';
+const EMAIL_KEY   = 'craftcxm_email';
+const API_KEY_KEY = 'craftcxm_api_key';
+
+/* ── API key persistence ── */
+function getStoredApiKey() {
+  return localStorage.getItem(API_KEY_KEY) || '';
+}
 
 /* ── Email persistence ── */
 function getStoredEmail() {
@@ -108,10 +114,20 @@ function wireHamburger() {
   });
 }
 
+/* ── Nav link tracking ── */
+function wireNavTracking() {
+  document.querySelectorAll('[data-page]').forEach(link => {
+    link.addEventListener('click', () => {
+      const destination = link.dataset.page;
+      trackEvent('linkClick', { destination, source: 'header_nav', url: link.href });
+    });
+  });
+}
+
 /* ── Page-view tracking ── */
 async function trackPageView(pageName) {
   if (!getStoredEmail()) return; // Silently skip if no email set
-  await trackEvent('page_viewed', { page: pageName, url: window.location.pathname });
+  await trackEvent('pageView', { page: pageName, url: window.location.pathname });
 }
 
 /* ── No-email warning banner ── */
@@ -130,6 +146,7 @@ function renderNoEmailBanner(container) {
 function initApp(currentPage, trackPageAs) {
   wireEmailInputs();
   wireHamburger();
+  wireNavTracking();
   initCart();
 
   if (trackPageAs) {

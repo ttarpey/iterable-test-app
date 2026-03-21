@@ -24,10 +24,17 @@
         A sandbox for exploring Iterable's customer journey features — track events,
         update profiles, manage preferences and trigger journeys, all from your browser.
       </p>
-      <a href="shop.html" class="btn btn-primary btn-lg" id="heroShopBtn">
-        Browse the Shop
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-      </a>
+      <div class="hero-api-key-group">
+        <input
+          type="text"
+          id="heroApiKeyInput"
+          class="hero-api-key-input"
+          placeholder="Enter your Iterable environment API key"
+          autocomplete="off"
+          spellcheck="false"
+        >
+        <button class="btn btn-primary btn-lg" id="heroConnectBtn">Connect</button>
+      </div>
     </section>
 
     <!-- Navigation cards -->
@@ -102,15 +109,65 @@
   initComponents('home');
   initApp('home', 'Home');
 
+  // API key connect
+  const heroApiKeyInput  = document.getElementById('heroApiKeyInput');
+  const heroConnectBtn   = document.getElementById('heroConnectBtn');
+
+  // Restore connected state if key already saved
+  const savedKey = getStoredApiKey();
+  if (savedKey) {
+    heroApiKeyInput.value = savedKey;
+    setConnectedState(true);
+  }
+
+  function setConnectedState(connected) {
+    heroConnectBtn.textContent = connected ? 'Connected' : 'Connect';
+    heroConnectBtn.classList.toggle('btn-connected', connected);
+  }
+
+  // Reset to Connect state when user edits the input
+  heroApiKeyInput.addEventListener('input', () => setConnectedState(false));
+
+  async function handleConnect() {
+    const key = heroApiKeyInput.value.trim();
+    if (!key) {
+      showToast('Please enter an API key.', 'error');
+      return;
+    }
+
+    heroConnectBtn.textContent = 'Connecting…';
+    heroConnectBtn.disabled = true;
+
+    // Temporarily store so iterableFetch can use it
+    localStorage.setItem('craftcxm_api_key', key);
+
+    const result = await iterableFetch('GET', '/channels');
+
+    heroConnectBtn.disabled = false;
+
+    if (result.ok) {
+      setConnectedState(true);
+      showToast('API key connected successfully.', 'success');
+    } else {
+      localStorage.removeItem('craftcxm_api_key');
+      setConnectedState(false);
+      const msg = result.error && result.error !== 'No API key set.'
+        ? `Connection failed: ${result.error}`
+        : 'Connection failed. Please check your API key and try again.';
+      showToast(msg, 'error');
+    }
+  }
+
+  heroConnectBtn.addEventListener('click', handleConnect);
+  heroApiKeyInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleConnect(); });
+
   // Track nav card clicks
   document.getElementById('navShop')?.addEventListener('click', () =>
-    trackEvent('nav_link_clicked', { destination: 'shop', source: 'home_card' }));
+    trackEvent('linkClick', { destination: 'shop', source: 'home_card' }));
   document.getElementById('navProfile')?.addEventListener('click', () =>
-    trackEvent('nav_link_clicked', { destination: 'profile', source: 'home_card' }));
+    trackEvent('linkClick', { destination: 'profile', source: 'home_card' }));
   document.getElementById('navPrefs')?.addEventListener('click', () =>
-    trackEvent('nav_link_clicked', { destination: 'preferences', source: 'home_card' }));
-  document.getElementById('heroShopBtn')?.addEventListener('click', () =>
-    trackEvent('nav_link_clicked', { destination: 'shop', source: 'hero_cta' }));
+    trackEvent('linkClick', { destination: 'preferences', source: 'home_card' }));
 </script>
 </body>
 </html>

@@ -6,7 +6,6 @@
  */
 
 const ITERABLE_CONFIG = {
-  apiKey:  '990cab827f744c03b740ca37a6e69730',
   baseUrl: 'https://api.iterable.com/api',
 };
 

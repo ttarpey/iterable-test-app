@@ -7,12 +7,16 @@
 
 /* ── internal fetch wrapper ── */
 async function iterableFetch(method, path, body = null) {
-  const email = getStoredEmail();
+  const apiKey = getStoredApiKey();
+  if (!apiKey) {
+    showToast('Enter your Iterable API key in the header first.', 'error');
+    return { ok: false, data: null, error: 'No API key set.' };
+  }
 
   const opts = {
     method,
     headers: {
-      'Api-Key':      ITERABLE_CONFIG.apiKey,
+      'Api-Key':      apiKey,
       'Content-Type': 'application/json',
     },
   };
@@ -33,6 +37,11 @@ async function iterableFetch(method, path, body = null) {
     // Likely a CORS or network error
     return { ok: false, data: null, error: err.message };
   }
+}
+
+/* ── API key helpers ── */
+function getStoredApiKey() {
+  return localStorage.getItem('craftcxm_api_key') || '';
 }
 
 /* ── email guard ── */
