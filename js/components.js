@@ -82,9 +82,17 @@ function headerHTML() {
 function footerHTML() {
   return `
 <footer class="footer">
-  <p>CraftCXM Iterable Test App &mdash; Internal use only &mdash;
-    <a href="https://iterable.com" target="_blank" rel="noopener">Iterable</a>
-  </p>
+  <div class="footer-inner">
+    <div class="footer-col footer-col--left">
+      <p>CraftCXM Iterable Test App | Internal use only</p>
+      <p class="footer-address">Level 23, Tower Five, 727 Collins Street, Melbourne VIC 3008</p>
+    </div>
+    <div class="footer-col footer-col--right">
+      <a href="https://craftcxm.com/" target="_blank" rel="noopener">Craft CXM</a>
+      <a href="https://www.linkedin.com/company/craftcxm/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="mailto:info@craftcxm.com">info@craftcxm.com</a>
+    </div>
+  </div>
 </footer>
 `;
 }

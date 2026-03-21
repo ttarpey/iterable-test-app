@@ -175,6 +175,3 @@ To add a new Iterable API call, add a function to `js/iterable.js` following the
 | Preferences page shows no channels | Sandbox has no channels/message types configured | Set up channels and message types in your Iterable account |
 | Calls succeed locally but fail after deploy | API key not committed to the repo | Ensure `js/config.js` is not in `.gitignore` |
 
----
-
-*Internal use only — CraftCXM Iterable Test App*
