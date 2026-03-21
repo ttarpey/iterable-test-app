@@ -16,7 +16,7 @@ A lightweight, static web app for testing [Iterable](https://iterable.com) featu
 | **Profile** | Fetch and update Iterable user data fields (first name, last name, country) |
 | **Preferences** | Manage channel and message type subscriptions live from the sandbox |
 
-Every page view fires a `page_viewed` event. Entering an email in the header creates or updates the user in Iterable via `users/update`.
+Every page view fires a `pageView` event. Entering an email in the header creates or updates the user in Iterable via `users/update`.
 
 ---
 
@@ -61,26 +61,15 @@ To rename the URL: **Site settings → Domain management → Change site name**.
 3. Select your private repo; leave build settings blank
 4. Deploy — live at `https://<name>.pages.dev`
 
-> The `.github/workflows/deploy.yml` file is not used by any of the above options and can be deleted.
-
 ---
 
 ## Configuration
 
 ### API Key
 
-**File:** `js/config.js`
+Find your API key in Iterable under **Integrations → API Keys**.
 
-```js
-const ITERABLE_CONFIG = {
-  apiKey:  'YOUR_API_KEY_HERE',   // ← your Iterable sandbox API key
-  baseUrl: 'https://api.iterable.com/api',
-};
-```
-
-Find your API key in Iterable under **Integrations → API Keys**. This is the only value you need to change to point the app at a different sandbox.
-
-> **Note:** Because this is a client-side app, the API key is visible in the browser. Keep the GitHub repository **private** and restrict the key's permissions in Iterable to your sandbox only.
+Add your API key on the Home Page and click connect. A successful connection will result in the Connect button turning green and the text updates to connected. The connection will persist until the browser is closed as it is held in the browser's local storgage.
 
 ### Product Catalogue
 
@@ -167,9 +156,9 @@ Each HTML page loads scripts in this order: `config.js → iterable.js → compo
 ## Forking / Customising
 
 1. **Fork the repository** on GitHub
-2. Update `js/config.js` with your own API key (and product catalogue if desired)
-3. Connect your fork to Netlify, Vercel, or Cloudflare Pages (see Deploying section above)
-4. Push to `main`
+2. Make any desired changes to the code
+2. Connect your fork to Netlify, Vercel, or Cloudflare Pages (see Deploying section above)
+3. Push to `main`
 
 To add a new Iterable API call, add a function to `js/iterable.js` following the existing pattern — each function uses the internal `iterableFetch(method, path, body)` wrapper which handles auth headers, JSON parsing, and error formatting automatically.
 
