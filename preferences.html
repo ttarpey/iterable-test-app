@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preferences — CraftCXM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="app">
+  <div id="header-root"></div>
+
+  <main class="main-content">
+
+    <div class="page-header">
+      <div class="page-header-inner">
+        <h1>Preference Centre</h1>
+        <p>Manage channel subscriptions and message type opt-ins — fetched live from your Iterable sandbox.</p>
+      </div>
+    </div>
+
+    <div class="prefs-section">
+      <div class="container">
+        <div id="emailWarning"></div>
+
+        <div class="prefs-grid">
+
+          <!-- Main content -->
+          <div class="prefs-main" id="prefsMain">
+            <div class="prefs-loading" id="prefsLoading">
+              <span class="spinner spinner-dark"></span>
+              Loading your preferences from Iterable…
+            </div>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="prefs-sidebar">
+            <div class="prefs-info-card">
+              <h3>How this works</h3>
+              <p>
+                Your subscription preferences are fetched directly from Iterable using
+                your account's configured message types and channels. Toggle any option
+                below and hit Save to update your profile.
+              </p>
+            </div>
+            <div class="prefs-info-card">
+              <h3>Unsubscribe from all</h3>
+              <p>
+                The master toggle at the top will opt you out of all marketing
+                communications across every channel.
+              </p>
+            </div>
+            <button class="btn btn-primary prefs-save-btn" id="savePrefsBtn" disabled>
+              Save Preferences
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="footer-root"></div>
+  <div id="cart-panel-root"></div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/iterable.js"></script>
+<script src="js/components.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/app.js"></script>
+<script>
+  initComponents('prefs');
+  initApp('prefs', 'Preferences');
+
+  // ── State ──────────────────────────────────────────────────────
+  let allChannels     = [];
+  let allMessageTypes = [];
+  let userUnsubChannels = [];
+  let userUnsubTypes    = [];
+
+  // ── Icons used on this page ────────────────────────────────────
+  const channelIcons = {
+    Email: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`,
+    SMS:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+    Push:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>`,
+    Web:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20A14.5 14.5 0 0 1 12 2"/><path d="M2 12h20"/></svg>`,
+    InApp: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>`,
+  };
+  const defaultChannelIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>`;
+
+  function iconForChannel(name) {
+    const key = Object.keys(channelIcons).find(k => name.toLowerCase().includes(k.toLowerCase()));
+    return channelIcons[key] || defaultChannelIcon;
+  }
+
+  // ── Build toggle ID ────────────────────────────────────────────
+  function toggleId(typeId) { return `toggle-type-${typeId}`; }
+  function channelToggleId(channelId) { return `toggle-channel-${channelId}`; }
+  function masterToggleId() { return 'toggle-master'; }
+
+  // ── Read current toggle state ──────────────────────────────────
+  function isTypeSub(typeId) {
+    const el = document.getElementById(toggleId(typeId));
+    return el ? el.checked : !userUnsubTypes.includes(typeId);
+  }
+  function isChannelSub(channelId) {
+    const el = document.getElementById(channelToggleId(channelId));
+    return el ? el.checked : !userUnsubChannels.includes(channelId);
+  }
+
+  // ── Render ─────────────────────────────────────────────────────
+  function renderPreferences() {
+    const main = document.getElementById('prefsMain');
+
+    const masterChecked = userUnsubChannels.length === 0 && userUnsubTypes.length === 0;
+
+    let html = `
+      <!-- Master toggle -->
+      <div class="prefs-master-card">
+        <div>
+          <h3>Marketing Communications</h3>
+          <p>Receive all marketing messages across all channels</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="${masterToggleId()}" ${masterChecked ? 'checked' : ''}>
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+    `;
+
+    if (allChannels.length === 0) {
+      html += `<div class="prefs-info-card"><p>No channels found in your Iterable sandbox. Configure message types and channels in Iterable to see them here.</p></div>`;
+    } else {
+      allChannels.forEach(channel => {
+        const types = allMessageTypes.filter(t => t.channelId === channel.id);
+        const channelSubbed = !userUnsubChannels.includes(channel.id);
+        const subCount = types.filter(t => !userUnsubTypes.includes(t.id)).length;
+
+        html += `
+          <div class="prefs-channel-card">
+            <div class="prefs-channel-header">
+              <div class="prefs-channel-title">
+                <div class="prefs-channel-icon">${iconForChannel(channel.name)}</div>
+                <div>
+                  <div class="prefs-channel-name">${channel.name}</div>
+                  <div class="prefs-channel-meta">${types.length} message type${types.length !== 1 ? 's' : ''} · ${subCount} subscribed</div>
+                </div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="${channelToggleId(channel.id)}" ${channelSubbed ? 'checked' : ''}>
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+            ${types.length > 0 ? `
+            <div class="prefs-types">
+              ${types.map(type => {
+                const subbed = !userUnsubTypes.includes(type.id);
+                return `
+                  <div class="prefs-type-row">
+                    <div class="prefs-type-info">
+                      <h4>${type.name}</h4>
+                      <p>ID: ${type.id}${type.channelId ? ` · Channel: ${channel.name}` : ''}</p>
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" id="${toggleId(type.id)}" data-type-id="${type.id}" ${subbed ? 'checked' : ''}>
+                      <span class="toggle-track"></span>
+                    </label>
+                  </div>
+                `;
+              }).join('')}
+            </div>` : ''}
+          </div>
+        `;
+      });
+    }
+
+    main.innerHTML = html;
+    document.getElementById('savePrefsBtn').disabled = false;
+
+    // Master toggle wires all others
+    document.getElementById(masterToggleId())?.addEventListener('change', e => {
+      const checked = e.target.checked;
+      allChannels.forEach(ch => {
+        const el = document.getElementById(channelToggleId(ch.id));
+        if (el) el.checked = checked;
+      });
+      allMessageTypes.forEach(t => {
+        const el = document.getElementById(toggleId(t.id));
+        if (el) el.checked = checked;
+      });
+    });
+
+    // Channel toggles cascade to their message types
+    allChannels.forEach(ch => {
+      document.getElementById(channelToggleId(ch.id))?.addEventListener('change', e => {
+        const checked = e.target.checked;
+        allMessageTypes
+          .filter(t => t.channelId === ch.id)
+          .forEach(t => {
+            const el = document.getElementById(toggleId(t.id));
+            if (el) el.checked = checked;
+          });
+      });
+    });
+  }
+
+  // ── Load preferences ───────────────────────────────────────────
+  async function loadPreferences() {
+    const e = getStoredEmail();
+    if (!e) {
+      renderNoEmailBanner(document.getElementById('emailWarning'));
+      document.getElementById('prefsLoading').innerHTML =
+        '<p style="color:var(--color-text-muted)">Enter your email to load preferences.</p>';
+      return;
+    }
+
+    const [channelsRes, typesRes, userRes] = await Promise.all([
+      getChannels(),
+      getMessageTypes(),
+      getUser(e),
+    ]);
+
+    if (channelsRes.ok)  allChannels     = channelsRes.data.channels     || [];
+    if (typesRes.ok)     allMessageTypes = typesRes.data.messageTypes    || [];
+
+    if (userRes.ok && userRes.data && userRes.data.user) {
+      const user = userRes.data.user;
+      userUnsubChannels = user.unsubscribedChannelIds     || [];
+      userUnsubTypes    = user.unsubscribedMessageTypeIds || [];
+    }
+
+    if (!channelsRes.ok && !typesRes.ok) {
+      document.getElementById('prefsLoading').innerHTML =
+        `<p style="color:var(--color-error)">Failed to load from Iterable: ${channelsRes.error || typesRes.error}</p>`;
+      return;
+    }
+
+    renderPreferences();
+  }
+
+  loadPreferences();
+
+  // ── Save ───────────────────────────────────────────────────────
+  document.getElementById('savePrefsBtn').addEventListener('click', async () => {
+    const e = getStoredEmail();
+    if (!e) { showToast('Please enter your email first.', 'error'); return; }
+
+    const btn = document.getElementById('savePrefsBtn');
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner"></span> Saving…`;
+
+    const unsubChannels = allChannels
+      .filter(ch => !document.getElementById(channelToggleId(ch.id))?.checked)
+      .map(ch => ch.id);
+
+    const unsubTypes = allMessageTypes
+      .filter(t => !document.getElementById(toggleId(t.id))?.checked)
+      .map(t => t.id);
+
+    const subTypes = allMessageTypes
+      .filter(t => document.getElementById(toggleId(t.id))?.checked)
+      .map(t => t.id);
+
+    const result = await updateSubscriptions({
+      unsubscribedChannelIds:     unsubChannels,
+      unsubscribedMessageTypeIds: unsubTypes,
+      subscribedMessageTypeIds:   subTypes,
+    });
+
+    btn.disabled = false;
+    btn.innerHTML = 'Save Preferences';
+
+    if (result.ok) {
+      userUnsubChannels = unsubChannels;
+      userUnsubTypes    = unsubTypes;
+      showToast('Preferences saved to Iterable!', 'success');
+    } else {
+      showToast(`Save failed: ${result.error}`, 'error');
+    }
+  });
+</script>
+</body>
+</html>
