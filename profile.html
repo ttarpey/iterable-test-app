@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile — CraftCXM</title>
+  <title>Profile – CraftCXM</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
@@ -33,7 +33,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </div>
             <h3 id="sidebarName">Unknown User</h3>
-            <p id="sidebarEmail" style="word-break:break-all;">—</p>
+            <p id="sidebarEmail" style="word-break:break-all;">–</p>
             <div class="profile-status unknown" id="profileStatus">
               <span class="profile-status-dot"></span>
               <span id="profileStatusText">Not found in Iterable</span>
@@ -132,7 +132,7 @@
   function syncEmailDisplay() {
     const e = getStoredEmail();
     document.getElementById('profileEmail').value = e || '';
-    document.getElementById('sidebarEmail').textContent = e || '—';
+    document.getElementById('sidebarEmail').textContent = e || '–';
     if (!e) {
       document.getElementById('sidebarName').textContent = 'Unknown User';
       setStatus(false);
@@ -190,7 +190,7 @@
       showToast('Profile loaded from Iterable', 'success');
     } else if (result.ok) {
       setStatus(false);
-      showToast('User not yet in Iterable — save a profile to create them.', 'info');
+      showToast('User not yet in Iterable – save a profile to create them.', 'info');
     } else {
       showToast(`Could not fetch profile: ${result.error}`, 'error');
     }
