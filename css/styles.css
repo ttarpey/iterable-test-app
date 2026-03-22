@@ -1052,11 +1052,13 @@ p { color: var(--color-text-muted); }
   .prefs-grid { grid-template-columns: 1fr; }
   .prefs-sidebar { position: static; }
 }
-@media (max-width: 768px) {
+@media (max-width: 960px) {
   .header-nav { display: none; }
   .header-email-wrapper { display: none; }
   .hamburger-btn { display: flex; }
   .mobile-nav { display: flex; }
+}
+@media (max-width: 768px) {
   .shop-grid { grid-template-columns: repeat(2, 1fr); }
   .form-row { grid-template-columns: 1fr; }
   .hero { padding: 48px 24px 40px; }

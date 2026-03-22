@@ -86,11 +86,12 @@ function footerHTML() {
     <div class="footer-col footer-col--left">
       <p>CraftCXM Iterable Test App | Internal use only</p>
       <p class="footer-address">Level 23, Tower Five, 727 Collins Street, Melbourne VIC 3008</p>
+      <p>© 2026 Craft CXM</p>
     </div>
     <div class="footer-col footer-col--right">
-      <a href="https://craftcxm.com/" target="_blank" rel="noopener">Craft CXM</a>
+      <a href="https://craftcxm.com/" target="_blank" rel="noopener">Website</a>
       <a href="https://www.linkedin.com/company/craftcxm/" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="mailto:info@craftcxm.com">info@craftcxm.com</a>
+      <a href="mailto:info@craftcxm.com">Email</a>
     </div>
   </div>
 </footer>
