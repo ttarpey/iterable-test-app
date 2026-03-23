@@ -26,7 +26,7 @@ Every page view fires a `pageView` event. Entering an email in the header create
 npx serve .
 ```
 
-Then open `http://localhost:3000` in your browser. Enter your email in the header to start tracking.
+Then open `http://localhost:3000` in your browser. Add your API Key on the Home Page and enter your email in the header to start tracking.
 
 > **Ad blockers** can silently block requests to `api.iterable.com`. If calls are failing locally, test in an incognito/private window with extensions disabled.
 
@@ -36,7 +36,7 @@ Then open `http://localhost:3000` in your browser. Enter your email in the heade
 
 > **Note:** GitHub Pages requires a paid plan for private repositories. The options below are all free forever and support private GitHub repos.
 
-### Option A – Netlify (recommended)
+### Option A – Netlify
 
 1. Sign up free at [netlify.com](https://netlify.com)
 2. **New site → Import from Git** → connect your private GitHub repo
@@ -79,7 +79,7 @@ Each product has the following shape:
 
 ```js
 {
-  id:          'prod-001',          // unique identifier (used in cart state)
+  id:          'prod-001',         // unique identifier (used in cart state)
   sku:         'WH-001',           // SKU sent to Iterable commerce endpoints
   name:        'Wireless Headphones',
   description: 'Premium sound, 30-hour battery, all-day comfort.',
@@ -170,8 +170,6 @@ To add a new Iterable API call, add a function to `js/iterable.js` following the
 |---|---|---|
 | `ERR_BLOCKED_BY_CLIENT` in console | Ad blocker blocking `api.iterable.com` | Test in incognito, or whitelist the site |
 | `CORS` error in console | Browser blocking cross-origin request | Iterable allows browser `fetch()` – check the API key is valid |
-| `401 Unauthorized` | Invalid or missing API key | Check `js/config.js` → `ITERABLE_CONFIG.apiKey` |
-| `404` on user fetch | User doesn't exist in Iterable yet | Save a profile first to create the user |
+| `401 Unauthorized` | Invalid or missing API key | Enter your API key on the Home Page to connect your Iterable sandbox |
 | Preferences page shows no channels | Sandbox has no channels/message types configured | Set up channels and message types in your Iterable account |
-| Calls succeed locally but fail after deploy | API key not committed to the repo | Ensure `js/config.js` is not in `.gitignore` |
 
