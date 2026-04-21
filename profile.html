@@ -54,6 +54,22 @@
 
             <div class="form-row">
               <div class="form-field">
+                <label for="profileEmail">Email Address</label>
+                <input type="email" id="profileEmail" class="input" placeholder="jane@example.com" readonly
+                       style="background:var(--color-bg); cursor:not-allowed;" title="Change your email using the header input">
+                <small style="color:var(--color-text-muted); font-size:0.775rem;">
+                  To change your tracking email, update the field in the header.
+                </small>
+              </div>
+              <div class="form-field">
+                <label for="itblUserId">Iterable User ID</label>
+                <input type="text" id="itblUserId" class="input" placeholder="—" readonly
+                       style="background:var(--color-bg); cursor:not-allowed;">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-field">
                 <label for="firstName">First Name</label>
                 <input type="text" id="firstName" class="input" placeholder="Jane">
               </div>
@@ -61,15 +77,6 @@
                 <label for="lastName">Last Name</label>
                 <input type="text" id="lastName" class="input" placeholder="Smith">
               </div>
-            </div>
-
-            <div class="form-field">
-              <label for="profileEmail">Email Address</label>
-              <input type="email" id="profileEmail" class="input" placeholder="jane@example.com" readonly
-                     style="background:var(--color-bg); cursor:not-allowed;" title="Change your email using the header input">
-              <small style="color:var(--color-text-muted); font-size:0.775rem;">
-                To change your tracking email, update the field in the header.
-              </small>
             </div>
 
             <div class="form-field">
@@ -127,8 +134,6 @@
   initComponents('profile');
   initApp('Profile');
 
-  const email = getStoredEmail();
-
   // Populate email field
   function syncEmailDisplay() {
     const e = getStoredEmail();
@@ -136,6 +141,7 @@
     document.getElementById('sidebarEmail').textContent = e || '–';
     if (!e) {
       document.getElementById('sidebarName').textContent = 'Unknown User';
+      document.getElementById('itblUserId').value = '';
       setStatus(false);
     }
   }
@@ -157,8 +163,9 @@
   // Populate form from Iterable user data
   function populateForm(user) {
     const df = user.dataFields || {};
-    if (df.firstName) document.getElementById('firstName').value = df.firstName;
-    if (df.lastName)  document.getElementById('lastName').value  = df.lastName;
+    if (df.firstName)   document.getElementById('firstName').value   = df.firstName;
+    if (df.lastName)    document.getElementById('lastName').value    = df.lastName;
+    if (df.itblUserId)  document.getElementById('itblUserId').value  = df.itblUserId;
     if (df.country) {
       const select = document.getElementById('country');
       select.value = df.country;

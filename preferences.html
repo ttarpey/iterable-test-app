@@ -159,7 +159,7 @@
             ${types.length > 0 ? `
             <div class="prefs-types">
               ${types.map(type => {
-                const subbed = !userUnsubTypes.includes(type.id);
+                const subbed = channelSubbed && !userUnsubTypes.includes(type.id);
                 return `
                   <div class="prefs-type-row">
                     <div class="prefs-type-info">
@@ -229,9 +229,9 @@
     if (typesRes.ok)     allMessageTypes = typesRes.data.messageTypes    || [];
 
     if (userRes.ok && userRes.data && userRes.data.user) {
-      const user = userRes.data.user;
-      userUnsubChannels = user.unsubscribedChannelIds     || [];
-      userUnsubTypes    = user.unsubscribedMessageTypeIds || [];
+      const fields = userRes.data.user.dataFields || {};
+      userUnsubChannels = fields.unsubscribedChannelIds     || [];
+      userUnsubTypes    = fields.unsubscribedMessageTypeIds || [];
     }
 
     if (!channelsRes.ok && !typesRes.ok) {
