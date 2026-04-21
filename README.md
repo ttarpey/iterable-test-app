@@ -1,6 +1,6 @@
 # CraftCXM – Iterable Test App
 
-A lightweight, static web app for testing [Iterable](https://iterable.com) features against a shared sandbox. Colleagues visit a single URL, enter their email, and interact with a simulated e-commerce store – every action fires real Iterable API calls, feeding journeys, updating user profiles, and managing subscription preferences.
+A lightweight, static web app for testing [Iterable](https://iterable.com) features against a shared sandbox. Users visit a single URL, enter their email, and interact with a simulated e-commerce store – every action fires real Iterable API calls, feeding journeys, updating user profiles, and managing subscription preferences.
 
 **No build step. No framework. No install required.**
 
@@ -10,7 +10,7 @@ A lightweight, static web app for testing [Iterable](https://iterable.com) featu
 
 | Page | What it does |
 |---|---|
-| **Home** | Navigation hub, fires `nav_link_clicked` events |
+| **Home** | Navigation hub, fires `linkClick` events |
 | **Shop** | Browse 8 products, add to cart – fires `updateCart` on every change |
 | **Cart** | Adjust quantities, remove items, complete purchase – fires `trackPurchase` |
 | **Profile** | Fetch and update Iterable user data fields (first name, last name, country) |
@@ -29,37 +29,6 @@ npx serve .
 Then open `http://localhost:3000` in your browser. Add your API Key on the Home Page and enter your email in the header to start tracking.
 
 > **Ad blockers** can silently block requests to `api.iterable.com`. If calls are failing locally, test in an incognito/private window with extensions disabled.
-
----
-
-## Deploying (free, private repo)
-
-> **Note:** GitHub Pages requires a paid plan for private repositories. The options below are all free forever and support private GitHub repos.
-
-### Option A – Netlify
-
-1. Sign up free at [netlify.com](https://netlify.com)
-2. **New site → Import from Git** → connect your private GitHub repo
-3. Leave the build command blank; set **Publish directory** to `.`
-4. Click **Deploy** – live at `https://<name>.netlify.app`
-5. Pushes to `main` redeploy automatically
-
-To rename the URL: **Site settings → Domain management → Change site name**.
-
-### Option B – Vercel
-
-1. Sign up free at [vercel.com](https://vercel.com) (Hobby plan, no expiry)
-2. **New Project → Import Git Repository** → connect your private GitHub repo
-3. Framework preset: **Other**; leave all build settings blank
-4. Click **Deploy** – live at `https://<repo>.vercel.app`
-5. Pushes to `main` redeploy automatically
-
-### Option C – Cloudflare Pages
-
-1. Sign up free at [cloudflare.com](https://cloudflare.com)
-2. **Workers & Pages → Create → Pages → Connect to Git**
-3. Select your private repo; leave build settings blank
-4. Deploy – live at `https://<name>.pages.dev`
 
 ---
 
@@ -157,7 +126,6 @@ Each HTML page loads scripts in this order: `config.js → iterable.js → compo
 
 1. **Fork the repository** on GitHub
 2. Make any desired changes to the code
-2. Connect your fork to Netlify, Vercel, or Cloudflare Pages (see Deploying section above)
 3. Push to `main`
 
 To add a new Iterable API call, add a function to `js/iterable.js` following the existing pattern – each function uses the internal `iterableFetch(method, path, body)` wrapper which handles auth headers, JSON parsing, and error formatting automatically.
