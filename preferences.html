@@ -164,7 +164,7 @@
                   <div class="prefs-type-row">
                     <div class="prefs-type-info">
                       <h4>${type.name}</h4>
-                      <p>ID: ${type.id}${type.channelId ? ` · Channel: ${channel.name}` : ''}</p>
+                      <p>ID: ${type.id}</p>
                     </div>
                     <label class="toggle-switch">
                       <input type="checkbox" id="${toggleId(type.id)}" data-type-id="${type.id}" ${subbed ? 'checked' : ''}>
@@ -225,8 +225,10 @@
       getUser(e),
     ]);
 
-    if (channelsRes.ok)  allChannels     = channelsRes.data.channels     || [];
-    if (typesRes.ok)     allMessageTypes = typesRes.data.messageTypes    || [];
+    const isArchived = name => /archived/i.test(name);
+    const byName = (a, b) => a.name.localeCompare(b.name);
+    if (channelsRes.ok)  allChannels     = (channelsRes.data.channels     || []).filter(c => !isArchived(c.name)).sort(byName);
+    if (typesRes.ok)     allMessageTypes = (typesRes.data.messageTypes    || []).filter(t => !isArchived(t.name)).sort(byName);
 
     if (userRes.ok && userRes.data && userRes.data.user) {
       const fields = userRes.data.user.dataFields || {};
