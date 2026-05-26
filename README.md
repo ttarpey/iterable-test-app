@@ -51,6 +51,7 @@ Use this in Iterable email templates to link directly into the app for that reci
 | Manage preferences (email footer) | `https://your-app-url/preferences.html?email={{email}}` |
 | View / edit profile | `https://your-app-url/profile.html?email={{email}}` |
 | Shop | `https://your-app-url/shop.html?email={{email}}` |
+| Restore abandoned cart | `https://your-app-url/shop.html?email={{email}}&restoreCart=true` |
 
 Iterable replaces `{{email}}` with the recipient's address at send time. The Profile and Preferences pages will automatically fetch the user's data once the email is set.
 

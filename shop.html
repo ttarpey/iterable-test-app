@@ -101,6 +101,34 @@
 
   // No-email warning
   renderNoEmailBanner(document.getElementById('emailWarning'));
+
+  // Restore abandoned cart from Iterable if ?restoreCart=true
+  if (new URLSearchParams(window.location.search).get('restoreCart') === 'true') {
+    (async () => {
+      const email = getStoredEmail();
+      if (!email) return;
+
+      const result = await getUser(email);
+      const items  = result.ok && result.data?.user?.shoppingCartItems;
+      if (!items?.length) return;
+
+      saveCart(items.map(item => ({
+        id:          item.id,
+        sku:         item.sku,
+        name:        item.name,
+        description: item.description || '',
+        price:       item.price,
+        quantity:    item.quantity,
+        category:    item.categories?.[0] || '',
+        imageUrl:    item.imageUrl || '',
+      })));
+
+      renderCart();
+      updateCartBadge();
+      openCart();
+      showToast('Your cart has been restored!', 'success');
+    })();
+  }
 </script>
 </body>
 </html>
