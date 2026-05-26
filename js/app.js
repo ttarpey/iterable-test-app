@@ -11,7 +11,7 @@ const API_KEY_KEY = 'craftcxm_api_key';
 
 /* ── API key persistence ── */
 function getStoredApiKey() {
-  return sessionStorage.getItem(API_KEY_KEY) || '';
+  return localStorage.getItem(API_KEY_KEY) || '';
 }
 
 /* ── Email persistence ── */
@@ -48,6 +48,12 @@ function handleEmailCommit(email) {
     // Create / update user in Iterable so the profile exists
     updateUser({ signupSource: 'CraftCXM Test App' }, trimmed);
   }
+}
+
+/* ── Email from URL (e.g. links in Iterable emails: ?email={{email}}) ── */
+function readEmailFromURL() {
+  const param = new URLSearchParams(window.location.search).get('email');
+  if (param) setStoredEmail(param.trim().toLowerCase());
 }
 
 function wireEmailInputs() {
@@ -144,6 +150,7 @@ function renderNoEmailBanner(container) {
 
 /* ── Main init ── */
 function initApp(trackPageAs) {
+  readEmailFromURL();
   wireEmailInputs();
   wireHamburger();
   wireNavTracking();

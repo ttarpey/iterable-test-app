@@ -140,7 +140,7 @@
     heroConnectBtn.disabled = true;
 
     // Temporarily store so iterableFetch can use it
-    sessionStorage.setItem('craftcxm_api_key', key);
+    localStorage.setItem('craftcxm_api_key', key);
 
     const result = await iterableFetch('GET', '/channels');
 
@@ -150,7 +150,7 @@
       setConnectedState(true);
       showToast('API key connected successfully.', 'success');
     } else {
-      sessionStorage.removeItem('craftcxm_api_key');
+      localStorage.removeItem('craftcxm_api_key');
       setConnectedState(false);
       const msg = result.error && result.error !== 'No API key set.'
         ? `Connection failed: ${result.error}`

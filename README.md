@@ -12,8 +12,8 @@ A lightweight, static web app for testing [Iterable](https://iterable.com) featu
 |---|---|
 | **Home** | Navigation hub, fires `linkClick` events |
 | **Shop** | Browse 8 products, add to cart – fires `updateCart` on every change |
-| **Cart** | Adjust quantities, remove items, complete purchase – fires `trackPurchase` |
-| **Profile** | Fetch and update Iterable user data fields (first name, last name, country) |
+| **Cart panel** | Slide-out drawer on every page – adjust quantities, remove items, complete purchase – fires `trackPurchase` |
+| **Profile** | View user IDs (userId, itblUserId); fetch and update data fields (first name, last name, country) |
 | **Preferences** | Manage channel and message type subscriptions live from the sandbox |
 
 Every page view fires a `pageView` event. Entering an email in the header creates or updates the user in Iterable via `users/update`.
@@ -38,7 +38,25 @@ Then open `http://localhost:3000` in your browser. Add your API Key on the Home 
 
 Find your API key in Iterable under **Integrations → API Keys**.
 
-Add your API key on the Home Page and click connect. A successful connection will result in the Connect button turning green and the text updates to connected. The connection will persist until the tab is closed.
+Add your API key on the Home Page and click connect. A successful connection will result in the Connect button turning green and the text updates to connected. The key is saved in `localStorage` and persists across tabs and browser sessions until manually cleared.
+
+### Linking from Iterable emails
+
+Any page accepts an `?email=` query parameter. When present, it pre-loads the user's email for the session — no manual entry needed.
+
+Use this in Iterable email templates to link directly into the app for that recipient:
+
+| Use case | Link |
+|---|---|
+| Manage preferences (email footer) | `https://your-app-url/preferences.html?email={{email}}` |
+| View / edit profile | `https://your-app-url/profile.html?email={{email}}` |
+| Shop | `https://your-app-url/shop.html?email={{email}}` |
+
+Iterable replaces `{{email}}` with the recipient's address at send time. The Profile and Preferences pages will automatically fetch the user's data once the email is set.
+
+> You can combine this with standard UTM parameters — e.g. `?email={{email}}&utm_source=iterable&utm_medium=email&utm_campaign=my-campaign`. The app reads only the `email` param and ignores the rest.
+
+---
 
 ### Product Catalogue
 
@@ -68,6 +86,7 @@ Place logo files in the `assets/` folder:
 |---|---|
 | `assets/logo-dark.png` | Home page hero (light background) |
 | `assets/logo-light.png` | Header (dark background) |
+| `assets/favicon.png` | Browser tab icon (all pages) |
 
 If either file is missing the slot is simply empty – no broken image icons.
 
@@ -106,6 +125,7 @@ baseUrl: 'https://api.eu.iterable.com/api',
 ├── profile.html             # User profile form
 ├── preferences.html         # Subscription preference centre
 ├── assets/
+│   ├── favicon.png          # Browser tab icon
 │   ├── logo-dark.png        # Logo for light backgrounds
 │   └── logo-light.png       # Logo for dark backgrounds (header)
 ├── css/
